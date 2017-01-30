@@ -1,4 +1,5 @@
 class TasksController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_task, only: [:show, :edit, :update, :destroy]
 
   # GET /tasks
@@ -32,7 +33,7 @@ class TasksController < ApplicationController
         format.html { redirect_to root_url, notice: 'Task was successfully created.' }
         format.json { render :show, status: :created, location: @task }
       else
-        format.html { render :new }
+        format.html { redirect_to root_url, alert: 'Crap, something broke!' }
         format.json { render json: @task.errors, status: :unprocessable_entity }
       end
     end
