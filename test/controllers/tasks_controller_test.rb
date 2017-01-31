@@ -2,6 +2,7 @@ require 'test_helper'
 
 class TasksControllerTest < ActionDispatch::IntegrationTest
   setup do
+    sign_in users(:one)
     @task = tasks(:one)
   end
 
@@ -20,7 +21,7 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
       post tasks_url, params: { task: { description: @task.description, done: @task.done } }
     end
 
-    assert_redirected_to task_url(Task.last)
+    assert_redirected_to root_url
   end
 
   test "should show task" do
@@ -35,7 +36,7 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
 
   test "should update task" do
     patch task_url(@task), params: { task: { description: @task.description, done: @task.done } }
-    assert_redirected_to task_url(@task)
+    assert_redirected_to root_url
   end
 
   test "should destroy task" do
@@ -43,6 +44,6 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
       delete task_url(@task)
     end
 
-    assert_redirected_to tasks_url
+    assert_redirected_to root_url
   end
 end
