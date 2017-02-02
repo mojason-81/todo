@@ -46,4 +46,14 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to root_url
   end
+
+  test "should not show another users tasks" do
+    get task_url(tasks(:two))
+    assert_response :missing
+  end
+
+  test "should show signed in users tasks" do
+    get task_url(tasks(:one))
+    assert_response :success
+  end
 end
