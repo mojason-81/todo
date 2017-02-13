@@ -1,4 +1,5 @@
 class TasksController < ApplicationController
+  before_action {binding.pry}
   before_action :authenticate_user!
   before_action :set_task, only: [:show, :edit, :update, :destroy]
 
@@ -6,7 +7,7 @@ class TasksController < ApplicationController
   # GET /tasks.json
   def index
     @task = Task.new
-    @tasks = Task.incomplete
+    @tasks = policy_scope(Task.incomplete)
   end
 
   # GET /tasks/1
@@ -67,7 +68,7 @@ class TasksController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_task
       @task = current_user.tasks.where(id: params[:id]).first
-
+      authorize @task
       head :not_found unless @task
     end
 
