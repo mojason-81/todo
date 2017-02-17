@@ -1,7 +1,9 @@
 class TasksController < ApplicationController
-  before_action {binding.pry}
+  include Pundit
   before_action :authenticate_user!
   before_action :set_task, only: [:show, :edit, :update, :destroy]
+  after_action :verify_authorized, except: :index
+  after_action :verify_policy_scoped, only: :index
 
   # GET /tasks
   # GET /tasks.json
@@ -18,6 +20,7 @@ class TasksController < ApplicationController
   # GET /tasks/new
   def new
     @task = Task.new
+    authorize @task
   end
 
   # GET /tasks/1/edit
@@ -28,6 +31,7 @@ class TasksController < ApplicationController
   # POST /tasks.json
   def create
     @task = current_user.tasks.build(task_params)
+    authorize @task
 
     respond_to do |format|
       if @task.save
@@ -67,9 +71,9 @@ class TasksController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_task
-      @task = current_user.tasks.where(id: params[:id]).first
+      @task = policy_scope(Task).find_by(id: params[:id])
+      return render_not_found unless @task
       authorize @task
-      head :not_found unless @task
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

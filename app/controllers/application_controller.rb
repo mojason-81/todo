@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
-  include Pundit
-  after_action :verify_authorized, except: :index
-  after_action :verify_policy_scoped, only: :index
   protect_from_forgery with: :exception
+
+  def render_not_found
+    render file: "#{Rails.root}/public/404.html", status: :not_found
+  end
 end
